@@ -1,6 +1,7 @@
 module.exports = async (req, res) => {
     try {
         const mysql = require('mysql2/promise');
+        const url = require('url');
 
         // CORS headers
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,14 +12,30 @@ module.exports = async (req, res) => {
             return res.status(200).end();
         }
 
+        // Parse DATABASE_URL
+        const dbUrl = new URL(process.env.DATABASE_URL);
+
         // Create pool
-        const pool = mysql.createPool(process.env.DATABASE_URL);
+        const pool = mysql.createPool({
+            host: dbUrl.hostname,
+            port: dbUrl.port || 3306,
+            user: dbUrl.username,
+            password: dbUrl.password,
+            database: dbUrl.pathname.substring(1),
+            waitForConnections: true,
+            connectionLimit: 1,
+            queueLimit: 0,
+            ssl: {
+                rejectUnauthorized: false
+            }
+        });
 
         const [places] = await pool.query(`
             SELECT id, name, description, location, latitude, longitude, 
                    category, image_url, created_at 
             FROM places 
             ORDER BY created_at DESC
+            LIMIT 20
         `);
 
         await pool.end();
@@ -32,8 +49,8 @@ module.exports = async (req, res) => {
         console.error('Places API Error:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to fetch places',
-            message: error.message
+            error: error.message,
+            code: error.code
         });
     }
 };

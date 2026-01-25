@@ -1,9 +1,27 @@
 module.exports = async (req, res) => {
     try {
         const mysql = require('mysql2/promise');
+        const url = require('url');
 
-        // Create pool with URL
-        const pool = mysql.createPool(process.env.DATABASE_URL);
+        // Parse DATABASE_URL
+        const dbUrl = new URL(process.env.DATABASE_URL);
+
+        // Create pool with parsed config
+        const pool = mysql.createPool({
+            host: dbUrl.hostname,
+            port: dbUrl.port || 3306,
+            user: dbUrl.username,
+            password: dbUrl.password,
+            database: dbUrl.pathname.substring(1), // Remove leading /
+            waitForConnections: true,
+            connectionLimit: 1,
+            queueLimit: 0,
+            enableKeepAlive: true,
+            keepAliveInitialDelay: 0,
+            ssl: {
+                rejectUnauthorized: false // Aiven uses self-signed certs
+            }
+        });
 
         // Test connection
         const [rows] = await pool.query('SELECT 1 as val');
@@ -14,15 +32,16 @@ module.exports = async (req, res) => {
             status: 'healthy',
             version: '1.0.0-secure',
             database: 'connected',
+            db_host: dbUrl.hostname,
             timestamp: new Date().toISOString()
         });
     } catch (error) {
         console.error('Health check error:', error);
         res.status(500).json({
             status: 'error',
-            message: 'Database connection failed',
-            error: error.message,
-            stack: error.stack
+            message: error.message,
+            code: error.code,
+            errno: error.errno
         });
     }
 };
