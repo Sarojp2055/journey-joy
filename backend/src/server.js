@@ -17,9 +17,15 @@ const PORT = process.env.PORT || 5000;
 // 1. Security Headers
 app.use(helmet());
 
-// 2. CORS - Only allow specific origins
+// 2. CORS - Allow Frontend to communicate
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    /\.vercel\.app$/ // Matches any Vercel deployment
+].filter(Boolean);
+
 app.use(cors({
-    origin: [process.env.FRONTEND_URL, 'http://localhost:5173'],
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']

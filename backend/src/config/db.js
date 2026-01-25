@@ -5,9 +5,24 @@ require('dotenv').config();
 let pool;
 
 if (process.env.DATABASE_URL) {
-  console.log('📡 Using DATABASE_URL for database connection');
-  // Pass the connection string directly to createPool
-  pool = mysql.createPool(process.env.DATABASE_URL);
+  console.log('📡 Decomposing DATABASE_URL for secure connection');
+  const url = require('url');
+  const dbConfig = url.parse(process.env.DATABASE_URL);
+  const [user, password] = dbConfig.auth.split(':');
+
+  pool = mysql.createPool({
+    host: dbConfig.hostname,
+    user: user,
+    password: password,
+    database: dbConfig.pathname.split('/')[1],
+    port: dbConfig.port || 3306,
+    ssl: {
+      rejectUnauthorized: false
+    },
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
 } else if (process.env.DB_HOST) {
   console.log('🏠 Using individual DB environment variables');
   pool = mysql.createPool({
