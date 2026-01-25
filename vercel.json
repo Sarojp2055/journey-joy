@@ -2,15 +2,13 @@
     "version": 2,
     "buildCommand": "npm run vercel-build",
     "outputDirectory": "frontend/dist",
-    "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api/index.js"
-        }
-    ],
     "rewrites": [
         {
-            "source": "/((?!api).*)",
+            "source": "/api/:path*",
+            "destination": "/api/index.js"
+        },
+        {
+            "source": "/:path*",
             "destination": "/index.html"
         }
     ],
