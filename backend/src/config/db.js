@@ -40,7 +40,9 @@ if (process.env.DATABASE_URL) {
     }
   });
 } else {
-  console.error('❌ No database configuration found! Set DATABASE_URL or DB_HOST/DB_USER/etc.');
+  console.error('❌ FATAL: No database configuration found!');
+  console.error('   - Check if DATABASE_URL is set in your Vercel Project Settings (Environment Variables).');
+  console.error('   - If running locally, check your .env file.');
   // Create a dummy pool that will fail on use to avoid crashing immediately but provide clear error
   pool = {
     query: () => { throw new Error('Database not configured. Check environment variables.'); },
