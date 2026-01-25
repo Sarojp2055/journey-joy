@@ -1,4 +1,9 @@
-const pool = require('../backend/src/config/db');
+const mysql = require('mysql2/promise');
+
+// Create connection pool
+const pool = mysql.createPool({
+    uri: process.env.DATABASE_URL
+});
 
 module.exports = async (req, res) => {
     try {
@@ -12,6 +17,7 @@ module.exports = async (req, res) => {
             timestamp: new Date().toISOString()
         });
     } catch (error) {
+        console.error('Health check error:', error);
         res.status(500).json({
             status: 'error',
             message: 'Database connection failed',
