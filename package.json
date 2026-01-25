@@ -1,15 +1,26 @@
 {
     "name": "ktm-heritage-trails",
     "private": true,
-    "scripts": {
-        "install-all": "npm install --prefix backend && npm install --prefix frontend",
-        "dev:backend": "npm run dev --prefix backend",
-        "dev:frontend": "npm run dev --prefix frontend",
-        "build": "npm run build --prefix frontend",
-        "start": "npm start --prefix backend",
-        "vercel-build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
-    },
-    "engines": {
-        "node": ">=18.0.0"
-    }
+    "install-all": "npm install",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "start": "npm start --prefix backend",
+    "vercel-build": "npm run build --prefix frontend"
+},
+"engines": {
+    "node": ">=18.0.0"
+},
+"dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^7.2.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.5",
+    "zod": "^3.22.4"
+}
 }

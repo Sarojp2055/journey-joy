@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const xss = require('xss-clean');
 const hpp = require('hpp');
 const mysql = require('mysql2/promise');
 const path = require('path');
@@ -43,7 +42,7 @@ app.use(cors({
 app.use(express.json({ limit: '10kb' }));
 
 // 4. Data Sanitization (XSS and Parameter Pollution)
-app.use(xss());
+// 4. Data Sanitization (Parameter Pollution)
 app.use(hpp());
 
 // 5. Rate Limiting
