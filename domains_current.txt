@@ -1,0 +1,10 @@
+Vercel CLI 50.5.0
+Fetching Domains under saroj-parajulis-projects-d6dc23ae
+> 3 Domains found under saroj-parajulis-projects-d6dc23ae [311ms]
+ 
+  Domain                             Registrar           Nameservers         Expiration Date    Creator             Age    
+  journey-joy-ilh-vercel.app         Third Party         Third Party         -                  sarojp2055          22h    
+  journey-joy-123vercel.app          Third Party         Third Party         -                  sarojp2055          22h    
+  journey-joy-vercel.app             Third Party         Third Party         -                  sarojp2055          22h    
+ 
+

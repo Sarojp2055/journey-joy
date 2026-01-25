@@ -25,12 +25,22 @@ const allowedOrigins = [
     /\.vercel\.app$/
 ].filter(Boolean);
 
+console.log('🌍 [SERVER DIAGNOSTIC] Allowed Origins:', allowedOrigins.map(o => o.toString()));
+
+app.use((req, res, next) => {
+    console.log(`📡 [REQ LOG] ${req.method} ${req.url} | Origin: ${req.headers.origin || 'No Origin'}`);
+    next();
+});
+
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
         const isAllowed = allowedOrigins.some(pattern =>
             typeof pattern === 'string' ? pattern === origin : pattern.test(origin)
         );
+        if (!isAllowed) {
+            console.warn(`⚠️ [CORS DIAGNOSTIC] Blocked request from origin: ${origin}`);
+        }
         callback(null, isAllowed);
     },
     credentials: true,

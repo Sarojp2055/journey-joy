@@ -6,16 +6,15 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 let pool;
 
 if (process.env.DATABASE_URL) {
-  console.log('📡 Decomposing DATABASE_URL for secure connection');
-
-  // Use modern URL API instead of deprecated url.parse()
   const dbUrl = new URL(process.env.DATABASE_URL);
+  console.log('📡 [DB DIAGNOSTIC] Attempting connection via DATABASE_URL');
+  console.log(`📡 [DB DIAGNOSTIC] Host: ${dbUrl.hostname}, Port: ${dbUrl.port || 3306}, Database: ${dbUrl.pathname.slice(1)}, User: ${dbUrl.username}`);
 
   pool = mysql.createPool({
     host: dbUrl.hostname,
     user: dbUrl.username,
     password: decodeURIComponent(dbUrl.password),
-    database: dbUrl.pathname.slice(1), // Remove leading '/'
+    database: dbUrl.pathname.slice(1),
     port: dbUrl.port || 3306,
     ssl: {
       rejectUnauthorized: false
@@ -25,7 +24,8 @@ if (process.env.DATABASE_URL) {
     queueLimit: 0
   });
 } else if (process.env.DB_HOST) {
-  console.log('🏠 Using individual DB environment variables');
+  console.log('🏠 [DB DIAGNOSTIC] Attempting connection via Individual Env Vars');
+  console.log(`🏠 [DB DIAGNOSTIC] Host: ${process.env.DB_HOST}, Port: ${process.env.DB_PORT || 25060}, Database: ${process.env.DB_NAME}, User: ${process.env.DB_USER}`);
   pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -40,10 +40,8 @@ if (process.env.DATABASE_URL) {
     }
   });
 } else {
-  console.error('❌ FATAL: No database configuration found!');
-  console.error('   - Check if DATABASE_URL is set in your Vercel Project Settings (Environment Variables).');
-  console.error('   - If running locally, check your .env file.');
-  // Create a dummy pool that will fail on use to avoid crashing immediately but provide clear error
+  console.error('❌ [DB DIAGNOSTIC] FATAL: No database configuration found!');
+  console.error('   - DATABASE_URL environment variable is missing.');
   pool = {
     query: () => { throw new Error('Database not configured. Check environment variables.'); },
     getConnection: () => Promise.reject(new Error('Database not configured. Check environment variables.'))

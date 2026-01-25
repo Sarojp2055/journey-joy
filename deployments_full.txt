@@ -1,0 +1,47 @@
+Vercel CLI 50.5.0
+Fetching deployments in saroj-parajulis-projects-d6dc23ae
+> Deployments for saroj-parajulis-projects-d6dc23ae/journey-joy [329ms]
+
+https://journey-l5wrq7yq4-saroj-parajulis-projects-d6dc23ae.vercel.app
+  Age     Deployment                                                                 Status      Environment     Duration     Username       
+  3m      https://journey-l5wrq7yq4-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      56s          sarojp2055     
+  52m     https://journey-hjaqo0227-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      56s          sarojp2055     
+  52m     https://journey-klcxj86z4-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      54s          sarojp2055     
+  55m     https://journey-7i5t8iea7-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      54s          sarojp2055     
+  55m     https://journey-kl4zfkthq-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      55s          sarojp2055     
+  58m     https://journey-itw25hwvh-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      55s          sarojp2055     
+https://journey-hjaqo0227-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-klcxj86z4-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-7i5t8iea7-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-kl4zfkthq-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-itw25hwvh-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-bmi87pjsa-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-gi7f9pf7r-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-de7rdwcci-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-nuk59nu23-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-nu4jtdwul-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-o2oafo7ch-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-n1i8m2d1p-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-nv56rbofe-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-el7ltvyf6-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-1gou0zg8f-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-ho0yr857z-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-9tsrfeal5-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-e4ze0wjii-saroj-parajulis-projects-d6dc23ae.vercel.app
+https://journey-236gdjgv9-saroj-parajulis-projects-d6dc23ae.vercel.app
+  58m     https://journey-bmi87pjsa-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      52s          sarojp2055     
+  1h      https://journey-gi7f9pf7r-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      52s          sarojp2055     
+  1h      https://journey-de7rdwcci-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      56s          sarojp2055     
+  1h      https://journey-nuk59nu23-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      46s          sarojp2055     
+  1h      https://journey-nu4jtdwul-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      48s          sarojp2055     
+  1h      https://journey-o2oafo7ch-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      49s          sarojp2055     
+  1h      https://journey-n1i8m2d1p-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      49s          sarojp2055     
+  1h      https://journey-nv56rbofe-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      50s          sarojp2055     
+  1h      https://journey-el7ltvyf6-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      48s          sarojp2055     
+  1h      https://journey-1gou0zg8f-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      37s          sarojp2055     
+  1h      https://journey-ho0yr857z-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      37s          sarojp2055     
+  2h      https://journey-9tsrfeal5-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      32s          sarojp2055     
+  2h      https://journey-e4ze0wjii-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      32s          sarojp2055     
+  2h      https://journey-236gdjgv9-saroj-parajulis-projects-d6dc23ae.vercel.app     ΓùÅ Ready     Production      26s          sarojp2055     
+
+> To display the next page, run `vercel ls journey-joy --next 1769356260668`

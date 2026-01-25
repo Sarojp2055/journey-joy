@@ -1,0 +1,181 @@
+Vercel CLI 50.5.0
+Retrieving projectΓÇª
+Deploying saroj-parajulis-projects-d6dc23ae/journey-joy
+Uploading [--------------------] (0.0B/45.9KB)
+Uploading [======--------------] (14.3KB/45.9KB)
+Uploading [==========----------] (24.1KB/45.9KB)
+Uploading [================----] (38.4KB/45.9KB)
+Uploading [====================] (45.9KB/45.9KB)
+Inspect: https://vercel.com/saroj-parajulis-projects-d6dc23ae/journey-joy/D3bWkJLoAu8xwEwGQuaA9eThd29c [3s]
+Production: https://journey-6fzaoe4vx-saroj-parajulis-projects-d6dc23ae.vercel.app [3s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) ΓÇô iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Downloading 76 deployment files...
+Building: Restored build cache from previous deployment (DiPFXkkJQWdN1A69DWpcvztugaLB)
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "vercel build"
+Building: Vercel CLI 50.4.10
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Installing dependencies...
+Building: up to date in 913ms
+Building: 21 packages are looking for funding
+Building: run `npm fund` for details
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 686ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 4.56s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 640ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 3.93s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 615ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 4.00s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 597ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 4.08s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 575ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 4.05s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 600ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 4.04s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 805ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 3.98s
+Building: Warning: Detected "engines": { "node": ">=18.0.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Running "npm run vercel-build"
+Building: > vercel-build
+Building: > npm install --prefix frontend && npm run build --prefix frontend
+Building: up to date, audited 188 packages in 593ms
+Building: 42 packages are looking for funding
+Building: run `npm fund` for details
+Building: found 0 vulnerabilities
+Building: > frontend@0.0.0 build
+Building: > vite build
+Building: vite v7.3.1 building client environment for production...
+Building: transforming...
+Building: Γ£ô 2128 modules transformed.
+Building: rendering chunks...
+Building: computing gzip size...
+Building: dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
+Building: dist/assets/index-CMRHFc_7.css   41.55 kB Γöé gzip:   7.48 kB
+Building: dist/assets/index-DktBDmDB.js   382.05 kB Γöé gzip: 120.97 kB
+Building: Γ£ô built in 4.06s
+Building: Build Completed in /vercel/output [48s]
+Building: Deploying outputs...
+[2K[1A[2K[GProduction: https://journey-6fzaoe4vx-saroj-parajulis-projects-d6dc23ae.vercel.app [1m]
+Completing...
+Aliased: https://journey-joy-three.vercel.app [1m]
+https://journey-6fzaoe4vx-saroj-parajulis-projects-d6dc23ae.vercel.app
