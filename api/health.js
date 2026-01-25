@@ -1,41 +1,45 @@
 module.exports = async (req, res) => {
+    let debugInfo = {
+        phase: 'init',
+        mysql2_loadable: false,
+        env_exists: !!process.env.DATABASE_URL
+    };
+
     try {
+        debugInfo.phase = 'loading_mysql2';
         const mysql = require('mysql2/promise');
+        debugInfo.mysql2_loadable = true;
 
-        // Try direct connection string first
-        let pool;
-        try {
-            // Method 1: Direct string
-            pool = mysql.createPool({
-                uri: process.env.DATABASE_URL
-            });
-        } catch (e1) {
-            // Method 2: As connectionString
-            try {
-                pool = mysql.createPool(process.env.DATABASE_URL);
-            } catch (e2) {
-                return res.status(500).json({
-                    error: 'Pool creation failed',
-                    method1_error: e1.message,
-                    method2_error: e2.message,
-                    url_length: process.env.DATABASE_URL.length
-                });
-            }
-        }
+        debugInfo.phase = 'creating_connection';
+        // Aiven MySQL usually works with this config
+        const connection = await mysql.createConnection({
+            uri: process.env.DATABASE_URL,
+            ssl: {
+                rejectUnauthorized: false
+            },
+            connectTimeout: 10000
+        });
 
-        const [rows] = await pool.query('SELECT 1 as val');
-        await pool.end();
+        debugInfo.phase = 'executing_query';
+        const [rows] = await connection.execute('SELECT 1 as val');
+
+        debugInfo.phase = 'closing_connection';
+        await connection.end();
 
         res.status(200).json({
+            success: true,
             status: 'healthy',
-            database: 'connected',
+            debug: debugInfo,
             result: rows[0]
         });
     } catch (error) {
-        res.status(500).json({
+        res.status(200).json({
+            success: false,
+            status: 'error',
             error: error.message,
             code: error.code,
-            stack: error.stack
+            stack: error.stack,
+            debug: debugInfo
         });
     }
 };
