@@ -1,14 +1,14 @@
-const mysql = require('mysql2/promise');
-
-// Create connection pool
-const pool = mysql.createPool({
-    uri: process.env.DATABASE_URL
-});
-
 module.exports = async (req, res) => {
     try {
-        // Test database connection
+        const mysql = require('mysql2/promise');
+
+        // Create pool with URL
+        const pool = mysql.createPool(process.env.DATABASE_URL);
+
+        // Test connection
         const [rows] = await pool.query('SELECT 1 as val');
+
+        await pool.end();
 
         res.status(200).json({
             status: 'healthy',
@@ -21,7 +21,8 @@ module.exports = async (req, res) => {
         res.status(500).json({
             status: 'error',
             message: 'Database connection failed',
-            error: error.message
+            error: error.message,
+            stack: error.stack
         });
     }
 };

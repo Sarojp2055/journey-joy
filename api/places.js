@@ -1,12 +1,7 @@
-const mysql = require('mysql2/promise');
-
-// Create connection pool
-const pool = mysql.createPool({
-    uri: process.env.DATABASE_URL
-});
-
 module.exports = async (req, res) => {
     try {
+        const mysql = require('mysql2/promise');
+
         // CORS headers
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -16,12 +11,17 @@ module.exports = async (req, res) => {
             return res.status(200).end();
         }
 
+        // Create pool
+        const pool = mysql.createPool(process.env.DATABASE_URL);
+
         const [places] = await pool.query(`
             SELECT id, name, description, location, latitude, longitude, 
                    category, image_url, created_at 
             FROM places 
             ORDER BY created_at DESC
         `);
+
+        await pool.end();
 
         res.status(200).json({
             success: true,
