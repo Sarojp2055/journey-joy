@@ -21,11 +21,18 @@ app.use(helmet());
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     'http://localhost:5173',
-    /\.vercel\.app$/ // Matches any Vercel deployment
+    'http://localhost:5000',
+    /\.vercel\.app$/
 ].filter(Boolean);
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const isAllowed = allowedOrigins.some(pattern =>
+            typeof pattern === 'string' ? pattern === origin : pattern.test(origin)
+        );
+        callback(null, isAllowed);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -106,10 +113,14 @@ pool.getConnection()
         });
     });
 
+// 8. Start Server logic
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
         console.log(`🚀 Secure Server running on port ${PORT}`);
     });
+} else {
+    // Vercel handles the listening, but we still want to ensure pool is ready
+    console.log('🌐 Vercel Production Environment detected');
 }
 
 module.exports = app;
