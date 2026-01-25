@@ -1,0 +1,4 @@
+Vercel CLI 50.5.0
+The "--limit" option was ignored because it is now deprecated. Please remove it.
+Fetching deployment "journey-joy.vercel.app" in saroj-parajulis-projects-d6dc23ae
+Error: Can't find the deployment "journey-joy.vercel.app" under the context "saroj-parajulis-projects-d6dc23ae"
