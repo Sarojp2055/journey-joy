@@ -22,8 +22,12 @@
             "handle": "filesystem"
         },
         {
+            "src": "/assets/(.*)",
+            "dest": "/frontend/assets/$1"
+        },
+        {
             "src": "/(.*)",
-            "dest": "/frontend/$1"
+            "dest": "/frontend/index.html"
         }
     ]
 }
