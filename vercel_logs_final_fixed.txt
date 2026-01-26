@@ -1,0 +1,6 @@
+Vercel CLI 50.5.0
+The "--limit" option was ignored because it is now deprecated. Please remove it.
+Fetching deployment "journey-9qjdpecnw-saroj-parajulis-projects-d6dc23ae.vercel.app" in saroj-parajulis-projects-d6dc23ae
+Displaying runtime logs for deployment journey-9qjdpecnw-saroj-parajulis-projects-d6dc23ae.vercel.app (dpl_DHZnLBeRQr1QUWiajuGo1r6Hw33M) starting from Jan Su 23:48:55.80
+
+waiting for new logs...

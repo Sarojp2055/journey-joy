@@ -13,7 +13,7 @@ if (process.env.DATABASE_URL) {
   pool = mysql.createPool({
     host: dbUrl.hostname,
     user: dbUrl.username,
-    password: decodeURIComponent(dbUrl.password),
+    password: dbUrl.password,
     database: dbUrl.pathname.slice(1),
     port: dbUrl.port || 3306,
     ssl: {

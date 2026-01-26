@@ -5,7 +5,9 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const mysql = require('mysql2/promise');
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+}
 
 const authRoutes = require('./routes/authRoutes');
 const placesRoutes = require('./routes/placesRoutes');
