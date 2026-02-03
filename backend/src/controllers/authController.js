@@ -45,6 +45,46 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body;
+        const { OAuth2Client } = require('google-auth-library');
+        const client = new OAuth2Client(); // Client ID not strictly needed for validation if audience check is skipped or generic
+
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            // audience: process.env.GOOGLE_CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+        });
+        const payload = ticket.getPayload();
+        const { name, email, sub } = payload;
+
+        // Check if user exists with this Google sub or email
+        // Note: For simplicity, we'll assume username = email if creating new
+        let [users] = await pool.query('SELECT * FROM users WHERE username = ?', [email]);
+
+        let user;
+        if (users.length === 0) {
+            // Create new user (password is random since they use Google)
+            const randomPassword = Math.random().toString(36).slice(-8);
+            const hash = await bcrypt.hash(randomPassword, 10);
+
+            const [result] = await pool.query(
+                'INSERT INTO users (username, password_hash) VALUES (?, ?)',
+                [email, hash]
+            );
+            user = { id: result.insertId, username: email, role: 'user' };
+        } else {
+            user = users[0];
+        }
+
+        const jwtToken = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token: jwtToken, user: { id: user.id, username: user.username, role: user.role } });
+    } catch (err) {
+        console.error('Google Auth Error:', err);
+        res.status(401).json({ error: 'Google authentication failed' });
+    }
+};
+
 exports.getSecurityQuestion = async (req, res) => {
     try {
         const { username } = req.query;
