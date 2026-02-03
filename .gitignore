@@ -30,3 +30,4 @@ out/
 # Logs
 logs
 *.log
+.env*.local

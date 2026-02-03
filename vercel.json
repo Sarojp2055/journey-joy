@@ -1,14 +1,41 @@
 {
     "version": 2,
+    "functions": {
+        "api/**/*.js": {
+            "includeFiles": "backend/**",
+            "memory": 512,
+            "maxDuration": 10
+        }
+    },
     "buildCommand": "npm run vercel-build",
     "outputDirectory": "frontend/dist",
     "rewrites": [
+        {
+            "source": "/api/health",
+            "destination": "/api/index.js"
+        },
+        {
+            "source": "/api/auth/:path*",
+            "destination": "/api/index.js"
+        },
+        {
+            "source": "/api/places/:path*",
+            "destination": "/api/index.js"
+        },
+        {
+            "source": "/api/places",
+            "destination": "/api/index.js"
+        },
+        {
+            "source": "/api/me/:path*",
+            "destination": "/api/index.js"
+        },
         {
             "source": "/api/:path*",
             "destination": "/api/index.js"
         },
         {
-            "source": "/:path*",
+            "source": "/((?!api/).*)",
             "destination": "/index.html"
         }
     ],

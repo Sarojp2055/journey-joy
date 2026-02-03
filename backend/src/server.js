@@ -3,12 +3,14 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
-const mysql = require('mysql2/promise');
 const path = require('path');
+
+// Load environment variables
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 }
 
+// Import routes
 const authRoutes = require('./routes/authRoutes');
 const placesRoutes = require('./routes/placesRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -16,123 +18,98 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 1. Security Headers
-app.use(helmet());
+// Trust proxy for Vercel serverless environment
+app.set('trust proxy', 1);
 
-// 2. CORS - Allow Frontend to communicate
+// 1. Security Headers
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// 2. CORS Configuration
 const allowedOrigins = [
-    process.env.FRONTEND_URL,
     'http://localhost:5173',
-    'http://localhost:5000',
-    /\.vercel\.app$/
+    'http://localhost:3000',
+    process.env.FRONTEND_URL,
+    'https://journey-joy.vercel.app'
 ].filter(Boolean);
 
-console.log('🌍 [SERVER DIAGNOSTIC] Allowed Origins:', allowedOrigins.map(o => o.toString()));
-
-app.use((req, res, next) => {
-    console.log(`📡 [REQ LOG] ${req.method} ${req.url} | Origin: ${req.headers.origin || 'No Origin'}`);
-    next();
-});
-
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin) return callback(null, true);
-        const isAllowed = allowedOrigins.some(pattern =>
-            typeof pattern === 'string' ? pattern === origin : pattern.test(origin)
-        );
-        if (!isAllowed) {
-            console.warn(`⚠️ [CORS DIAGNOSTIC] Blocked request from origin: ${origin}`);
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
         }
-        callback(null, isAllowed);
     },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    credentials: true
 }));
 
-// 3. Body Parsers (with size limits to prevent Denial of Service)
+// 3. Body Parser
 app.use(express.json({ limit: '10kb' }));
 
-// 4. Data Sanitization (XSS and Parameter Pollution)
-// 4. Data Sanitization (Parameter Pollution)
+// 4. HPP Security (prevent HTTP Parameter Pollution)
 app.use(hpp());
 
 // 5. Rate Limiting
-// Global API Limiter
 const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+    windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100,
-    message: 'Too many requests from this IP, please try again after 15 minutes.'
+    message: { error: 'Too many requests, please try again later' },
+    // Disable X-Forwarded-For validation for Vercel serverless
+    validate: { xForwardedForHeader: false }
 });
 app.use('/api', globalLimiter);
 
-// Auth Limiter (Much stricter to prevent Brute Force)
-const authLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // 10 attempts per hour
-    message: 'Too many failed login attempts. Account locked for 1 hour for security.'
-});
-app.use('/api/auth/login', authLimiter);
-app.use('/api/auth/register', authLimiter);
-
-// 6. Routes
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Welcome to Kathmandu Heritage Trails API',
-        status: 'active',
-        health: '/api/health'
-    });
-});
-
-app.get('/favicon.ico', (req, res) => res.status(204).end());
-
+// 6. API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/places', placesRoutes);
 app.use('/api/me', userRoutes);
 
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'healthy', version: '1.0.0-secure' });
-});
-
-// 7. Professional Global Error Handler (Hides DB details)
-app.use((err, req, res, next) => {
-    console.error(' [SECURITY LOG] ERROR:', err.stack);
-
-    const statusCode = err.statusCode || 500;
-    const message = process.env.NODE_ENV === 'production'
-        ? 'A server error occurred. Please contact support.'
-        : err.message;
-
-    res.status(statusCode).json({
-        success: false,
-        error: message
-    });
-});
-
-// Create DB connection test on start
-const pool = require('./config/db');
-pool.getConnection()
-    .then(conn => {
-        console.log('✅ Connected to Database (Secure Layer Active)');
-        conn.release();
-    })
-    .catch(err => {
-        console.error('❌ Database Connection Error:', {
-            message: err.message,
-            code: err.code,
-            errno: err.errno,
-            sqlState: err.sqlState
+// 7. Health Check Endpoint
+app.get('/api/health', async (req, res) => {
+    try {
+        const pool = require('./config/db');
+        await pool.query('SELECT 1');
+        res.json({
+            status: 'healthy',
+            database: 'connected',
+            version: '1.0.0',
+            timestamp: new Date().toISOString()
         });
-    });
+    } catch (error) {
+        console.error('Health check failed:', error.message);
+        res.status(500).json({
+            status: 'degraded',
+            database: 'disconnected',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
 
-// 8. Start Server logic
+// 8. 404 handler for API routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
+});
+
+// 9. Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('Server Error:', err);
+    res.status(500).json({
+        error: 'Internal server error',
+        message: process.env.NODE_ENV === 'production' ? undefined : err.message
+    });
+});
+
+// 10. Start Server (local development only)
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
-        console.log(`🚀 Secure Server running on port ${PORT}`);
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
     });
 } else {
-    // Vercel handles the listening, but we still want to ensure pool is ready
-    console.log('🌐 Vercel Production Environment detected');
+    console.log('🌐 Vercel Production Environment - Serverless mode active');
 }
 
 module.exports = app;
