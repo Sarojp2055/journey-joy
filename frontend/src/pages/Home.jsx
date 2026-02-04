@@ -55,13 +55,7 @@ export default function Home() {
                             to="/explore"
                             className="bg-heritage-red text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-red-800 transition-all shadow-lg hover:shadow-heritage-red/50"
                         >
-                            Start Journey
-                        </Link>
-                        <Link
-                            to="/login"
-                            className="bg-white/10 backdrop-blur-md text-white border border-white/30 px-8 py-3 rounded-full text-lg font-semibold hover:bg-white/20 transition-all"
-                        >
-                            Join Community
+                            Explore
                         </Link>
                     </motion.div>
                 </div>

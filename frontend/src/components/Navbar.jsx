@@ -19,7 +19,6 @@ export default function Navbar() {
                     </div>
 
                     <div className="hidden md:flex items-center space-x-8">
-                        <Link to="/" className="hover:text-heritage-gold transition-colors font-medium">Home</Link>
                         <Link to="/explore" className="hover:text-heritage-gold transition-colors font-medium">Explore</Link>
                     </div>
 
@@ -35,13 +34,6 @@ export default function Navbar() {
             {isOpen && (
                 <div className="md:hidden bg-heritage-red border-t border-red-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <Link
-                            to="/"
-                            className="block px-3 py-2 rounded-md hover:bg-red-800"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            Home
-                        </Link>
                         <Link
                             to="/explore"
                             className="block px-3 py-2 rounded-md hover:bg-red-800"
