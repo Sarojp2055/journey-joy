@@ -97,46 +97,4 @@ exports.getPlaceBySlug = async (req, res) => {
     }
 };
 
-exports.markVisited = async (req, res) => {
-    try {
-        const placeId = req.params.id;
-        const userId = req.userId;
-        await pool.query('INSERT IGNORE INTO user_visits (user_id, place_id) VALUES (?, ?)', [userId, placeId]);
-        res.json({ message: 'Marked as visited' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
 
-exports.unmarkVisited = async (req, res) => {
-    try {
-        const placeId = req.params.id;
-        const userId = req.userId;
-        await pool.query('DELETE FROM user_visits WHERE user_id = ? AND place_id = ?', [userId, placeId]);
-        res.json({ message: 'Unmarked visited' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-exports.addToFavorites = async (req, res) => {
-    try {
-        const placeId = req.params.id;
-        const userId = req.userId;
-        await pool.query('INSERT IGNORE INTO favorites (user_id, place_id) VALUES (?, ?)', [userId, placeId]);
-        res.json({ message: 'Added to favorites' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-exports.removeFromFavorites = async (req, res) => {
-    try {
-        const placeId = req.params.id;
-        const userId = req.userId;
-        await pool.query('DELETE FROM favorites WHERE user_id = ? AND place_id = ?', [userId, placeId]);
-        res.json({ message: 'Removed from favorites' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};

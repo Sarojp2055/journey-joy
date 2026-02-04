@@ -11,9 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
 const placesRoutes = require('./routes/placesRoutes');
-const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -62,9 +60,7 @@ const globalLimiter = rateLimit({
 app.use('/api', globalLimiter);
 
 // 6. API Routes
-app.use('/api/auth', authRoutes);
 app.use('/api/places', placesRoutes);
-app.use('/api/me', userRoutes);
 
 // 7. Health Check Endpoint
 app.get('/api/health', async (req, res) => {
