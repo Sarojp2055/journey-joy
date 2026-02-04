@@ -5,12 +5,11 @@ import { api } from '../utils/api';
 import { MapPin } from 'lucide-react';
 
 export default function Home() {
-    const [featured, setFeatured] = useState([]);
-    const [topVisited, setTopVisited] = useState([]);
+    const [famousPlaces, setFamousPlaces] = useState([]);
 
     useEffect(() => {
-        api.get('/places').then(setFeatured).catch(console.error);
-        api.get('/places/top-visited').then(setTopVisited).catch(console.error);
+        // Only fetch famous places for the homepage
+        api.get('/places/famous').then(setFamousPlaces).catch(console.error);
     }, []);
 
     return (
@@ -61,16 +60,16 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* All Sites Section */}
+            {/* Famous Places Section */}
             <section className="py-24 max-w-7xl mx-auto px-4">
                 <div className="text-center mb-16">
                     <span className="text-heritage-red font-bold tracking-widest uppercase text-sm">Discover</span>
-                    <h2 className="text-4xl font-serif font-bold text-stone-800 mt-2">Treasures of the Valley</h2>
+                    <h2 className="text-4xl font-serif font-bold text-stone-800 mt-2">Famous Places to Visit</h2>
                     <div className="w-24 h-1 bg-heritage-gold mx-auto mt-4 rounded-full"></div>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
-                    {featured.length > 0 ? featured.map((place) => (
+                    {famousPlaces.length > 0 ? famousPlaces.map((place) => (
                         <Link to={`/places/${place.slug}`} key={place.id} className="group bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300">
                             <div className="h-64 overflow-hidden relative">
                                 <img
@@ -94,23 +93,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Top Visited Section */}
-            <section className="py-20 bg-stone-100">
-                <div className="max-w-7xl mx-auto px-4">
-                    <h2 className="text-3xl font-serif font-bold text-stone-800 mb-12">Most Visited by Travelers</h2>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-                        {topVisited.map((place, idx) => (
-                            <Link to={`/places/${place.slug}`} key={place.id} className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center group">
-                                <div className="w-20 h-20 mx-auto rounded-full overflow-hidden mb-4 border-2 border-heritage-gold group-hover:border-heritage-red transition-colors">
-                                    <img src={place.image_url} alt={place.name} className="w-full h-full object-cover" />
-                                </div>
-                                <h3 className="font-bold text-stone-800 text-sm group-hover:text-heritage-red">{place.name}</h3>
-                                <p className="text-xs text-stone-500 mt-1">{place.visit_count} visits</p>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            {/* Footer or Call to Action removed 'Most Visited' section as requested */}
         </div>
     );
 }

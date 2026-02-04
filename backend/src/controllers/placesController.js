@@ -37,12 +37,28 @@ exports.getAllPlaces = async (req, res) => {
 exports.getFeaturedPlaces = async (req, res) => {
     try {
         const [rows] = await pool.query(`
-      SELECT p.id, p.name, p.slug, c.name as city_name, ph.image_url
+      SELECT p.id, p.name, p.slug, p.description, c.name as city_name, ph.image_url
       FROM places p
       LEFT JOIN cities c ON p.city_id = c.id
       LEFT JOIN place_photos ph ON p.id = ph.place_id AND ph.is_primary = TRUE
       WHERE p.is_featured = TRUE
-      LIMIT 100
+      LIMIT 20
+    `);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getFamousPlaces = async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+      SELECT p.id, p.name, p.slug, p.description, c.name as city_name, ph.image_url
+      FROM places p
+      LEFT JOIN cities c ON p.city_id = c.id
+      LEFT JOIN place_photos ph ON p.id = ph.place_id AND ph.is_primary = TRUE
+      ORDER BY p.is_featured DESC, p.id ASC
+      LIMIT 20
     `);
         res.json(rows);
     } catch (err) {
