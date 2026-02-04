@@ -14,7 +14,12 @@ export const api = {
         const res = await fetch(`${API_BASE_URL}${endpoint}`, {
             headers: getHeaders()
         });
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ error: res.statusText }));
+            const error = new Error(errorData.error || 'Something went wrong');
+            error.status = res.status;
+            throw error;
+        }
         return res.json();
     },
 
@@ -26,7 +31,9 @@ export const api = {
         });
         if (!res.ok) {
             const errorData = await res.json().catch(() => ({ error: res.statusText }));
-            throw new Error(errorData.error || 'Something went wrong');
+            const error = new Error(errorData.error || 'Something went wrong');
+            error.status = res.status;
+            throw error;
         }
         return res.json();
     },

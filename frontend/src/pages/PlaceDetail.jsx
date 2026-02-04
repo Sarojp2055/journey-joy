@@ -4,7 +4,7 @@ import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, Heart, CheckCircle, ExternalLink, MessageCircle, Star } from 'lucide-react';
 import SacredIcon from '../components/SacredIcon';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PlaceDetail() {
     const { slug } = useParams();
@@ -13,7 +13,7 @@ export default function PlaceDetail() {
     const [loading, setLoading] = useState(true);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isVisited, setIsVisited] = useState(false);
-    const [actionLoading, setActionLoading] = useState(false);
+    // Removed actionLoading to allow optimistic updates
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,7 +41,41 @@ export default function PlaceDetail() {
         fetchData();
     }, [slug, user]);
 
+    const toggleFavorite = async () => {
+        // Optimistic update
+        const previousState = isFavorite;
+        setIsFavorite(!isFavorite);
 
+        try {
+            if (previousState) {
+                await api.delete(`/me/favorites/${place.id}`);
+            } else {
+                await api.post(`/me/favorites/${place.id}`);
+            }
+        } catch (e) {
+            console.error('Error toggling favorite:', e);
+            // Revert on error
+            setIsFavorite(previousState);
+        }
+    };
+
+    const toggleVisited = async () => {
+        // Optimistic update
+        const previousState = isVisited;
+        setIsVisited(!isVisited);
+
+        try {
+            if (previousState) {
+                await api.delete(`/me/visits/${place.id}`);
+            } else {
+                await api.post(`/me/visits/${place.id}`);
+            }
+        } catch (e) {
+            console.error('Error toggling visited:', e);
+            // Revert on error
+            setIsVisited(previousState);
+        }
+    };
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-stone-50">
@@ -140,59 +174,41 @@ export default function PlaceDetail() {
                         {user ? (
                             <>
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={async () => {
-                                        setActionLoading(true);
-                                        try {
-                                            if (isFavorite) {
-                                                await api.delete(`/me/favorites/${place.id}`);
-                                            } else {
-                                                await api.post(`/me/favorites/${place.id}`);
-                                            }
-                                            setIsFavorite(!isFavorite);
-                                        } catch (e) {
-                                            console.error('Error toggling favorite:', e);
-                                        } finally {
-                                            setActionLoading(false);
-                                        }
-                                    }}
-                                    disabled={actionLoading}
-                                    className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all shadow-lg ${isFavorite
-                                            ? 'bg-heritage-red text-white'
-                                            : 'bg-white text-stone-700 border border-stone-200 hover:border-heritage-red'
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={toggleFavorite}
+                                    className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all shadow-lg duration-300 ${isFavorite
+                                        ? 'bg-heritage-red text-white shadow-heritage-red/30'
+                                        : 'bg-white text-stone-700 border border-stone-200 hover:border-heritage-red hover:shadow-md'
                                         }`}
                                 >
-                                    <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
-                                    {isFavorite ? 'Favorited' : 'Add to Favorites'}
+                                    <motion.div
+                                        animate={isFavorite ? { scale: [1, 1.4, 1] } : { scale: 1 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
+                                    </motion.div>
+                                    <span className="min-w-[100px] text-center">
+                                        {isFavorite ? 'Favorited' : 'Add to Favorites'}
+                                    </span>
                                 </motion.button>
 
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={async () => {
-                                        setActionLoading(true);
-                                        try {
-                                            if (isVisited) {
-                                                await api.delete(`/me/visits/${place.id}`);
-                                            } else {
-                                                await api.post(`/me/visits/${place.id}`);
-                                            }
-                                            setIsVisited(!isVisited);
-                                        } catch (e) {
-                                            console.error('Error toggling visited:', e);
-                                        } finally {
-                                            setActionLoading(false);
-                                        }
-                                    }}
-                                    disabled={actionLoading}
-                                    className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all shadow-lg ${isVisited
-                                            ? 'bg-green-600 text-white'
-                                            : 'bg-white text-stone-700 border border-stone-200 hover:border-green-600'
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={toggleVisited}
+                                    className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all shadow-lg duration-300 ${isVisited
+                                        ? 'bg-green-600 text-white shadow-green-600/30'
+                                        : 'bg-white text-stone-700 border border-stone-200 hover:border-green-600 hover:shadow-md'
                                         }`}
                                 >
-                                    <CheckCircle size={20} className={isVisited ? 'fill-white' : ''} />
-                                    {isVisited ? 'Visited ✓' : 'Mark as Visited'}
+                                    <motion.div
+                                        animate={isVisited ? { scale: [1, 1.4, 1] } : { scale: 1 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <CheckCircle size={20} className={isVisited ? 'fill-white' : ''} />
+                                    </motion.div>
+                                    <span className="min-w-[100px] text-center">
+                                        {isVisited ? 'Visited ✓' : 'Mark Visited'}
+                                    </span>
                                 </motion.button>
                             </>
                         ) : (

@@ -22,7 +22,10 @@ export const AuthProvider = ({ children }) => {
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
-                localStorage.removeItem('token');
+                // Only logout if unauthorized or forbidden
+                if (error.status === 401 || error.status === 403) {
+                    localStorage.removeItem('token');
+                }
             } finally {
                 setLoading(false);
             }
@@ -60,9 +63,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('token');
-        delete api.defaults.headers.common['Authorization'];
         setUser(null);
-        // Optional: navigate to home
         window.location.href = '/';
     };
 
