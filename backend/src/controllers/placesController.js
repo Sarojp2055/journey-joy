@@ -52,13 +52,13 @@ exports.getFeaturedPlaces = async (req, res) => {
 
 exports.getTopVisitedPlaces = async (req, res) => {
     try {
+        // Since user_visits table was removed, return places ordered by id
         const [rows] = await pool.query(`
-      SELECT p.id, p.name, p.slug, COUNT(uv.user_id) as visit_count, ph.image_url
+      SELECT p.id, p.name, p.slug, c.name as city_name, ph.image_url
       FROM places p
-      LEFT JOIN user_visits uv ON p.id = uv.place_id
+      LEFT JOIN cities c ON p.city_id = c.id
       LEFT JOIN place_photos ph ON p.id = ph.place_id AND ph.is_primary = TRUE
-      GROUP BY p.id
-      ORDER BY visit_count DESC
+      ORDER BY p.id ASC
       LIMIT 50
     `);
         res.json(rows);
@@ -66,6 +66,7 @@ exports.getTopVisitedPlaces = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 exports.getPlaceBySlug = async (req, res) => {
     try {
