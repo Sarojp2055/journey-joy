@@ -58,7 +58,7 @@ exports.getFamousPlaces = async (req, res) => {
       LEFT JOIN cities c ON p.city_id = c.id
       LEFT JOIN place_photos ph ON p.id = ph.place_id AND ph.is_primary = TRUE
       ORDER BY RAND()
-      LIMIT 20
+      LIMIT 50
     `);
         res.json(rows);
     } catch (err) {
