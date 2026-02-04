@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../utils/api';
-import { useAuth } from '../context/AuthContext';
 import { MapPin, Heart, CheckCircle, ExternalLink, MessageCircle, Star } from 'lucide-react';
 import SacredIcon from '../components/SacredIcon';
 import { motion } from 'framer-motion';
@@ -10,27 +9,12 @@ export default function PlaceDetail() {
     const { slug } = useParams();
     const [place, setPlace] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
-
-    // Interaction states
-    const [isVisited, setIsVisited] = useState(false);
-    const [isFavorite, setIsFavorite] = useState(false);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await api.get(`/places/${slug}`);
                 console.log('🏛️ Journey Joy | Data Loaded:', data);
                 setPlace(data);
-
-                if (user) {
-                    try {
-                        const visits = await api.get('/me/visits');
-                        const favorites = await api.get('/me/favorites');
-                        setIsVisited(visits.some(v => v.id === data.id));
-                        setIsFavorite(favorites.some(f => f.id === data.id));
-                    } catch (e) { console.error('Error fetching user stats:', e); }
-                }
             } catch (err) {
                 console.error('Error fetching place:', err);
             } finally {
@@ -38,33 +22,9 @@ export default function PlaceDetail() {
             }
         };
         fetchData();
-    }, [slug, user]);
+    }, [slug]);
 
-    const toggleVisit = async () => {
-        if (!user) return alert('Please login first');
-        try {
-            if (isVisited) {
-                await api.delete(`/places/${place.id}/visit`);
-                setIsVisited(false);
-            } else {
-                await api.post(`/places/${place.id}/visit`);
-                setIsVisited(true);
-            }
-        } catch (e) { alert(e.message); }
-    };
 
-    const toggleFavorite = async () => {
-        if (!user) return alert('Please login first');
-        try {
-            if (isFavorite) {
-                await api.delete(`/places/${place.id}/favorite`);
-                setIsFavorite(false);
-            } else {
-                await api.post(`/places/${place.id}/favorite`);
-                setIsFavorite(true);
-            }
-        } catch (e) { alert(e.message); }
-    };
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-stone-50">
@@ -160,29 +120,7 @@ export default function PlaceDetail() {
                     )}
 
                     <div className="flex flex-wrap gap-6 pt-4">
-                        <motion.button
-                            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.1)", y: -2 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                            onClick={toggleVisit}
-                            className={`flex items-center gap-4 px-10 py-5 rounded-full font-bold transition-all ${isVisited ? 'bg-green-600 text-white shadow-green-200' : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
-                                }`}
-                        >
-                            <CheckCircle size={24} />
-                            {isVisited ? 'Visited Site' : 'Mark Arrival'}
-                        </motion.button>
-
-                        <motion.button
-                            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.1)", y: -2 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                            onClick={toggleFavorite}
-                            className={`flex items-center gap-4 px-10 py-5 rounded-full font-bold transition-all ${isFavorite ? 'bg-red-600 text-white shadow-red-200' : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
-                                }`}
-                        >
-                            <Heart size={24} fill={isFavorite ? 'white' : 'none'} />
-                            {isFavorite ? 'In Wishlist' : 'Add to Wishlist'}
-                        </motion.button>
+                        {/* Interactive features removed due to login system removal */}
                     </div>
 
                     {place.video_url && (
