@@ -6,8 +6,6 @@ import { MapPin } from 'lucide-react';
 
 export default function Home() {
     const [famousPlaces, setFamousPlaces] = useState([]);
-
-    const [famousPlaces, setFamousPlaces] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
