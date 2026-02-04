@@ -93,7 +93,7 @@ export default function Home() {
                                 <p className="text-stone-500 text-sm line-clamp-2">{place.description}</p>
                             </div>
                         </Link>
-                    ) : error ? (
+                    )) : error ? (
                         <div className="col-span-3 text-center bg-red-50 p-8 rounded-xl border border-red-200">
                             <p className="text-red-600 font-bold mb-2">⚠ Unable to load places</p>
                             <p className="text-stone-600 text-sm">{error}</p>
