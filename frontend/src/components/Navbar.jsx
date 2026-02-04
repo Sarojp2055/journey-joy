@@ -24,10 +24,12 @@ export default function Navbar() {
                         <Link to="/explore" className="hover:text-heritage-gold transition-colors font-medium">Explore</Link>
                         {user ? (
                             <div className="flex items-center gap-4 ml-4">
-                                <span className="text-heritage-gold flex items-center gap-2 font-medium">
-                                    <User size={18} />
+                                <Link to="/profile" className="text-heritage-gold flex items-center gap-2 font-medium hover:text-white transition-colors">
+                                    <div className="w-8 h-8 bg-heritage-gold rounded-full flex items-center justify-center text-stone-900 font-bold text-sm">
+                                        {user.username?.charAt(0).toUpperCase()}
+                                    </div>
                                     {user.username}
-                                </span>
+                                </Link>
                                 <button
                                     onClick={logout}
                                     className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
@@ -83,15 +85,24 @@ export default function Navbar() {
                             </>
                         )}
                         {user && (
-                            <button
-                                onClick={() => {
-                                    logout();
-                                    setIsOpen(false);
-                                }}
-                                className="w-full text-left block px-3 py-2 rounded-md hover:bg-red-800 text-heritage-gold"
-                            >
-                                Logout ({user.username})
-                            </button>
+                            <>
+                                <Link
+                                    to="/profile"
+                                    className="block px-3 py-2 rounded-md hover:bg-red-800 text-heritage-gold"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    My Profile
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        logout();
+                                        setIsOpen(false);
+                                    }}
+                                    className="w-full text-left block px-3 py-2 rounded-md hover:bg-red-800"
+                                >
+                                    Logout
+                                </button>
+                            </>
                         )}
                     </div>
                 </div>

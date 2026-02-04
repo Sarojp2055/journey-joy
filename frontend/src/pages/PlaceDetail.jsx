@@ -1,20 +1,37 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { api } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import { MapPin, Heart, CheckCircle, ExternalLink, MessageCircle, Star } from 'lucide-react';
 import SacredIcon from '../components/SacredIcon';
 import { motion } from 'framer-motion';
 
 export default function PlaceDetail() {
     const { slug } = useParams();
+    const { user } = useAuth();
     const [place, setPlace] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isVisited, setIsVisited] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await api.get(`/places/${slug}`);
                 console.log('🏛️ Journey Joy | Data Loaded:', data);
                 setPlace(data);
+
+                // Fetch user's status for this place if logged in
+                if (user) {
+                    try {
+                        const status = await api.get(`/me/place-status/${data.id}`);
+                        setIsFavorite(status.isFavorite);
+                        setIsVisited(status.isVisited);
+                    } catch (e) {
+                        console.log('Could not fetch place status');
+                    }
+                }
             } catch (err) {
                 console.error('Error fetching place:', err);
             } finally {
@@ -22,7 +39,7 @@ export default function PlaceDetail() {
             }
         };
         fetchData();
-    }, [slug]);
+    }, [slug, user]);
 
 
 
@@ -119,8 +136,74 @@ export default function PlaceDetail() {
                         </motion.section>
                     )}
 
-                    <div className="flex flex-wrap gap-6 pt-4">
-                        {/* Interactive features removed due to login system removal */}
+                    <div className="flex flex-wrap gap-4 pt-4">
+                        {user ? (
+                            <>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={async () => {
+                                        setActionLoading(true);
+                                        try {
+                                            if (isFavorite) {
+                                                await api.delete(`/me/favorites/${place.id}`);
+                                            } else {
+                                                await api.post(`/me/favorites/${place.id}`);
+                                            }
+                                            setIsFavorite(!isFavorite);
+                                        } catch (e) {
+                                            console.error('Error toggling favorite:', e);
+                                        } finally {
+                                            setActionLoading(false);
+                                        }
+                                    }}
+                                    disabled={actionLoading}
+                                    className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all shadow-lg ${isFavorite
+                                            ? 'bg-heritage-red text-white'
+                                            : 'bg-white text-stone-700 border border-stone-200 hover:border-heritage-red'
+                                        }`}
+                                >
+                                    <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
+                                    {isFavorite ? 'Favorited' : 'Add to Favorites'}
+                                </motion.button>
+
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={async () => {
+                                        setActionLoading(true);
+                                        try {
+                                            if (isVisited) {
+                                                await api.delete(`/me/visits/${place.id}`);
+                                            } else {
+                                                await api.post(`/me/visits/${place.id}`);
+                                            }
+                                            setIsVisited(!isVisited);
+                                        } catch (e) {
+                                            console.error('Error toggling visited:', e);
+                                        } finally {
+                                            setActionLoading(false);
+                                        }
+                                    }}
+                                    disabled={actionLoading}
+                                    className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all shadow-lg ${isVisited
+                                            ? 'bg-green-600 text-white'
+                                            : 'bg-white text-stone-700 border border-stone-200 hover:border-green-600'
+                                        }`}
+                                >
+                                    <CheckCircle size={20} className={isVisited ? 'fill-white' : ''} />
+                                    {isVisited ? 'Visited ✓' : 'Mark as Visited'}
+                                </motion.button>
+                            </>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="flex items-center gap-3 px-6 py-3 rounded-full font-bold bg-heritage-gold text-stone-900 hover:bg-yellow-400 transition-all shadow-lg"
+                            >
+                                <Heart size={20} />
+                                Login to save favorites
+                            </Link>
+                        )}
                     </div>
 
                     {place.video_url && (
