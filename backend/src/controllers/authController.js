@@ -1,6 +1,9 @@
 const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Register User
 exports.register = async (req, res, next) => {
@@ -11,16 +14,13 @@ exports.register = async (req, res, next) => {
     }
 
     try {
-        const connection = await pool.getConnection();
-
         // Check if user exists
-        const [existingUsers] = await connection.query(
+        const [existingUsers] = await pool.query(
             'SELECT * FROM users WHERE email = ? OR username = ?',
             [email, username]
         );
 
         if (existingUsers.length > 0) {
-            connection.release();
             return res.status(400).json({ error: 'User already exists' });
         }
 
@@ -29,12 +29,10 @@ exports.register = async (req, res, next) => {
         const passwordHash = await bcrypt.hash(password, salt);
 
         // Create user
-        const [result] = await connection.query(
+        const [result] = await pool.query(
             'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
             [username, email, passwordHash]
         );
-
-        connection.release();
 
         sendTokenResponse(result.insertId, 201, res);
     } catch (error) {
@@ -51,13 +49,10 @@ exports.login = async (req, res, next) => {
     }
 
     try {
-        const connection = await pool.getConnection();
-
         // Check for user
-        const [users] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
         if (users.length === 0) {
-            connection.release();
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
@@ -65,8 +60,6 @@ exports.login = async (req, res, next) => {
 
         // Check if password matches
         const isMatch = await bcrypt.compare(password, user.password_hash);
-
-        connection.release();
 
         if (!isMatch) {
             return res.status(401).json({ error: 'Invalid credentials' });
@@ -78,12 +71,64 @@ exports.login = async (req, res, next) => {
     }
 };
 
+// Google Login
+exports.googleLogin = async (req, res, next) => {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ error: 'Google token is required' });
+    }
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const { name, email, sub: googleId, picture } = ticket.getPayload();
+
+        // Check if user exists
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+
+        let userId;
+
+        if (users.length > 0) {
+            // User exists, log them in
+            userId = users[0].id;
+
+            // Optionally update google_id if not set
+            if (!users[0].google_id) {
+                await pool.query('UPDATE users SET google_id = ? WHERE id = ?', [googleId, userId]);
+            }
+        } else {
+            // User doesn't exist, create account
+            // Generate a random password since they logged in via Google
+            const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash(randomPassword, salt);
+
+            const [result] = await pool.query(
+                'INSERT INTO users (username, email, password_hash, google_id) VALUES (?, ?, ?, ?)',
+                [name, email, passwordHash, googleId]
+            );
+            userId = result.insertId;
+        }
+
+        sendTokenResponse(userId, 200, res);
+    } catch (error) {
+        console.error('Google login error:', error);
+        return res.status(401).json({ error: 'Invalid Google token' });
+    }
+};
+
 // Get Current User
 exports.getMe = async (req, res, next) => {
     try {
-        const connection = await pool.getConnection();
-        const [users] = await connection.query('SELECT id, username, email, created_at FROM users WHERE id = ?', [req.user.id]);
-        connection.release();
+        const [users] = await pool.query('SELECT id, username, email, created_at, google_id FROM users WHERE id = ?', [req.user.id]);
+
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
 
         res.status(200).json({
             success: true,
@@ -124,11 +169,9 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     try {
-        const connection = await pool.getConnection();
-        const [users] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
         if (users.length === 0) {
-            connection.release();
             // Don't reveal if user exists or not for security
             return res.status(200).json({
                 success: true,
@@ -144,12 +187,10 @@ exports.forgotPassword = async (req, res, next) => {
         // Hash the token before storing
         const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-        await connection.query(
+        await pool.query(
             'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?',
             [hashedToken, resetTokenExpires, users[0].id]
         );
-
-        connection.release();
 
         // In production, you would send an email here
         // For now, we'll return the token (only for testing - remove in production!)
@@ -181,14 +222,12 @@ exports.resetPassword = async (req, res, next) => {
         const crypto = require('crypto');
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-        const connection = await pool.getConnection();
-        const [users] = await connection.query(
+        const [users] = await pool.query(
             'SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > NOW()',
             [hashedToken]
         );
 
         if (users.length === 0) {
-            connection.release();
             return res.status(400).json({ error: 'Invalid or expired reset token' });
         }
 
@@ -197,12 +236,10 @@ exports.resetPassword = async (req, res, next) => {
         const passwordHash = await bcrypt.hash(password, salt);
 
         // Update password and clear reset token
-        await connection.query(
+        await pool.query(
             'UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?',
             [passwordHash, users[0].id]
         );
-
-        connection.release();
 
         res.status(200).json({
             success: true,

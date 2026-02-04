@@ -13,22 +13,26 @@ import { AuthProvider } from './context/AuthContext'
 import ScrollToTop from './components/ScrollToTop'
 import './index.css'
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <AuthProvider>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="explore" element={<Explore />} />
-          <Route path="places/:slug" element={<PlaceDetail />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="reset-password/:token" element={<ResetPassword />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-      </Routes>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId="57782131230-l2704vo3dfr1847999lk7ei2m49q1n8l.apps.googleusercontent.com">
+      <AuthProvider>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="explore" element={<Explore />} />
+            <Route path="places/:slug" element={<PlaceDetail />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="reset-password/:token" element={<ResetPassword />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   </BrowserRouter>
 )

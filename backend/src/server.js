@@ -98,7 +98,7 @@ app.use('/api/*', (req, res) => {
 app.use((err, req, res, next) => {
     console.error('Server Error:', err);
     res.status(500).json({
-        error: process.env.NODE_ENV === 'production' ? err.message : 'Internal server error', // Swap temporarily to see error
+        error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
         message: err.message,
         stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
     });

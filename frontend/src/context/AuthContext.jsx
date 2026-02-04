@@ -16,9 +16,9 @@ export const AuthProvider = ({ children }) => {
                 // Or we can rely on verifying with /api/auth/me if we stored token
                 const token = localStorage.getItem('token');
                 if (token) {
-                    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    const { data } = await api.get('/auth/me');
-                    setUser(data.data);
+                    // Note: This needs to match how 'api' utility is used
+                    const res = await api.get('/auth/me');
+                    setUser(res.data);
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
@@ -32,23 +32,30 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const { data } = await api.post('/auth/login', { email, password });
-        localStorage.setItem('token', data.token);
-        api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        const res = await api.post('/auth/login', { email, password });
+        localStorage.setItem('token', res.token);
 
         // Fetch user data
         const userRes = await api.get('/auth/me');
-        setUser(userRes.data.data);
+        setUser(userRes.data);
     };
 
     const register = async (username, email, password) => {
-        const { data } = await api.post('/auth/register', { username, email, password });
-        localStorage.setItem('token', data.token);
-        api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        const res = await api.post('/auth/register', { username, email, password });
+        localStorage.setItem('token', res.token);
 
         // Fetch user data
         const userRes = await api.get('/auth/me');
-        setUser(userRes.data.data);
+        setUser(userRes.data);
+    };
+
+    const googleLogin = async (credential) => {
+        const res = await api.post('/auth/google', { token: credential });
+        localStorage.setItem('token', res.token);
+
+        // Fetch user data
+        const userRes = await api.get('/auth/me');
+        setUser(userRes.data);
     };
 
     const logout = () => {
@@ -60,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, googleLogin, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
