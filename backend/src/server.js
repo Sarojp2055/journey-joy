@@ -30,7 +30,8 @@ const allowedOrigins = [
     'http://localhost:3000',
     process.env.FRONTEND_URL,
     'https://journey-joy.vercel.app',
-    'https://journey-joy-three.vercel.app'
+    'https://journey-joy-three.vercel.app',
+    'https://journeyjoy.vercel.app'
 ].filter(Boolean);
 
 app.use(cors({

@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const client = new OAuth2Client('57782131230-l2704vo3dfr1847999lk7ei2m49q1n8l.apps.googleusercontent.com');
 
 // Register User
 exports.register = async (req, res, next) => {
@@ -82,7 +82,7 @@ exports.googleLogin = async (req, res, next) => {
     try {
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID
+            audience: '57782131230-l2704vo3dfr1847999lk7ei2m49q1n8l.apps.googleusercontent.com'
         });
 
         const { name, email, sub: googleId, picture } = ticket.getPayload();
