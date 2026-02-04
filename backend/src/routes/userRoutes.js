@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const authMiddleware = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
 // All routes require authentication
-router.use(authMiddleware);
+router.use(protect);
 
 // ==================== FAVORITES ====================
 
